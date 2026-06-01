@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Someone Special | 2026 Experience</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@200;400;700&family=Playfair+Display:italic,wght@0,400;1,700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --accent-gold: #d4af37;
+            --accent-rose: #ff4d6d;
+            --glass: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --text-main: #e0e0e0;
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --font-serif: 'Playfair Display', serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none; /* Custom cursor for 2026 feel */
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* --- Custom Cursor --- */
+        #cursor {
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: difference;
+            transition: transform 0.2s ease;
+        }
+
+        /* --- Background Canvas --- */
+        #canvas-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            filter: blur(2px);
+        }
+
+        /* --- Preloader/Intro Screen --- */
+        #intro-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 1s ease, visibility 1s;
+        }
+
+        .heart-loader {
+            width: 50px;
+            height: 50px;
+            background: var(--accent-rose);
+            transform: rotate(45deg);
+            animation: beat 1.2s infinite;
+            box-shadow: 0 0 40px var(--accent-rose);
+        }
+        .heart-loader::before, .heart-loader::after {
+            content: '';
+            width: 50px;
+            height: 50px;
+            background: var(--accent-rose);
+            border-radius: 50%;
+            position: absolute;
+        }
+        .heart-loader::before { left: -25px; }
+        .heart-loader::after { top: -25px; }
+
+        @keyframes beat {
+            0% { transform: rotate(45deg) scale(0.8); }
+            5% { transform: rotate(45deg) scale(0.9); }
+            10% { transform: rotate(45deg) scale(0.8); }
+            15% { transform: rotate(45deg) scale(1); }
+            50% { transform: rotate(45deg) scale(0.8); }
+            100% { transform: rotate(45deg) scale(0.8); }
+        }
+
+        .enter-btn {
+            margin-top: 40px;
+            padding: 15px 40px;
+            border: 1px solid var(--glass-border);
+            background: var(--glass);
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            backdrop-filter: blur(10px);
+            cursor: pointer;
+            transition: 0.3s;
+            opacity: 0;
+        }
+        .enter-btn.visible { opacity: 1; }
+
+        /* --- Sections --- */
+        section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 5vw;
+            position: relative;
+        }
+
+        .reveal-text {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: 1s ease-out;
+        }
+        .reveal-text.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* --- Hero Section --- */
+        .hero h1 {
+            font-family: var(--font-serif);
+            font-size: clamp(3rem, 10vw, 8rem);
+            font-weight: 700;
+            text-align: center;
+            background: linear-gradient(to right, #fff, var(--accent-gold), #fff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 20px;
+        }
+
+        /* --- Bento Grid Section --- */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(2, 300px);
+            gap: 20px;
+            max-width: 1200px;
+            width: 100%;
+        }
+
+        .bento-item {
+            background: var(--glass);
+            border: 1px solid var(--glass-border);
+            border-radius: 24px;
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            transition: transform 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .bento-item:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent-gold);
+        }
+
+        .item-1 { grid-column: span 2; }
+        .item-2 { grid-column: span 2; }
+        .item-3 { grid-column: span 1; }
+        .item-4 { grid-column: span 2; }
+        .item-5 { grid-column: span 1; }
+
+        .bento-item h3 {
+            font-family: var(--font-serif);
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--accent-gold);
+        }
+
+        /* --- Letter Section --- */
+        .letter-container {
+            max-width: 800px;
+            text-align: center;
+            padding: 60px;
+            background: radial-gradient(circle at center, rgba(212, 175, 55, 0.05) 0%, transparent 70%);
+        }
+
+        .letter-text {
+            font-family: var(--font-serif);
+            font-size: clamp(1.2rem, 3vw, 2rem);
+            font-style: italic;
+            line-height: 1.8;
+            color: #fff;
+        }
+
+        /* --- Interactive Gift Section --- */
+        .gift-box {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            cursor: pointer;
+            perspective: 1000px;
+        }
+
+        .gift-inner {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--accent-gold), #b38b1d);
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            transition: 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .gift-box:hover .gift-inner {
+            transform: rotateY(20deg) rotateX(10deg) scale(1.1);
+        }
+
+        /* --- Footer --- */
+        footer {
+            padding: 100px 20px;
+            text-align: center;
+            border-top: 1px solid var(--glass-border);
+        }
+
+        .timestamp {
+            font-size: 0.8rem;
+            letter-spacing: 5px;
+            color: var(--accent-gold);
+            text-transform: uppercase;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .bento-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: auto;
+            }
+            .item-1, .item-2, .item-3, .item-4, .item-5 {
+                grid-column: span 1;
+                height: 250px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div id="cursor"></div>
+    <canvas id="canvas-bg"></canvas>
+
+    <!-- Preloader Experience -->
+    <div id="intro-overlay">
+        <div class="heart-loader"></div>
+        <h2 style="margin-top: 50px; font-weight: 200; letter-spacing: 10px;">LOADING MOMENTS</h2>
+        <button class="enter-btn" id="startBtn">Enter Your Day</button>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="reveal-text">
+            <p class="timestamp">EST. 2026 EDITION</p>
+            <h1>Happy Birthday, <br><span style="font-style: italic;">Beautiful.</span></h1>
+            <p style="letter-spacing: 3px; opacity: 0.7;">SCROLL TO UNLOCK THE JOURNEY</p>
+        </div>
+    </section>
+
+    <!-- Bento Grid (Memories/Attributes) -->
+    <section>
+        <div class="bento-grid">
+            <div class="bento-item item-1 reveal-text">
+                <h3>The Radiance</h3>
+                <p>How you light up every room you walk into, without even trying.</p>
+            </div>
+            <div class="bento-item item-2 reveal-text">
+                <h3>The Kindness</h3>
+                <p>2026 and you're still the most empathetic soul I've ever known.</p>
+            </div>
+            <div class="bento-item item-3 reveal-text">
+                <h3>00:00</h3>
+                <p>Every second spent with you is a gift.</p>
+            </div>
+            <div class="bento-item item-4 reveal-text">
+                <h3>The Adventure</h3>
+                <p>From our late-night talks to the big dreams we chase together.</p>
+            </div>
+            <div class="bento-item item-5 reveal-text">
+                <h3>∞</h3>
+                <p>To many more.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Personal Letter -->
+    <section>
+        <div class="letter-container reveal-text">
+            <p class="letter-text">
+                "In a world that's always moving too fast, you are my favorite place to slow down. Today isn't just a celebration of your birth—it's a celebration of the impact you have on everyone around you. You are my favorite 'forever'."
+            </p>
+        </div>
+    </section>
+
+    <!-- Interactive Gift -->
+    <section>
+        <div class="reveal-text" style="text-align: center; margin-bottom: 50px;">
+            <h2 style="font-family: var(--font-serif); font-size: 3rem;">A Virtual Token</h2>
+            <p>Click to open your surprise</p>
+        </div>
+        <div class="gift-box" id="giftBox">
+            <div class="gift-inner">
+                TAP ME
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p class="timestamp">Made with love for You</p>
+        <p style="margin-top: 20px; opacity: 0.5;">&copy; 2026 Eternal Greetings Inc.</p>
+    </footer>
+
+    <!-- Audio (Optional: Add a source link for a romantic instrumental) -->
+    <audio id="bgMusic" loop>
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // --- Custom Cursor Logic ---
+        const cursor = document.getElementById('cursor');
+        document.addEventListener('mousemove', (e) => {
+            cursor.style.left = e.clientX + 'px';
+            cursor.style.top = e.clientY + 'px';
+        });
+
+        // --- Particle System ---
+        const canvas = document.getElementById('canvas-bg');
+        const ctx = canvas.getContext('2d');
+        let particles = [];
+
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 2 + 0.1;
+                this.speedX = Math.random() * 0.5 - 0.25;
+                this.speedY = Math.random() * 0.5 - 0.25;
+                this.opacity = Math.random() * 0.5;
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width) this.x = 0;
+                if (this.x < 0) this.x = canvas.width;
+                if (this.y > canvas.height) this.y = 0;
+                if (this.y < 0) this.y = canvas.height;
+            }
+            draw() {
+                ctx.fillStyle = `rgba(212, 175, 55, ${this.opacity})`;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function createParticles() {
+            for (let i = 0; i < 150; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        initCanvas();
+        createParticles();
+        animateParticles();
+
+        // --- Intro Logic ---
+        const startBtn = document.getElementById('startBtn');
+        const introOverlay = document.getElementById('intro-overlay');
+        const bgMusic = document.getElementById('bgMusic');
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                startBtn.classList.add('visible');
+            }, 1500);
+        });
+
+        startBtn.addEventListener('click', () => {
+            introOverlay.style.opacity = '0';
+            setTimeout(() => {
+                introOverlay.style.visibility = 'hidden';
+                // bgMusic.play(); // Browsers require interaction before playing audio
+                triggerReveal();
+            }, 1000);
+        });
+
+        // --- Intersection Observer for Scroll Animations ---
+        const observerOptions = {
+            threshold: 0.2
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        function triggerReveal() {
+            document.querySelectorAll('.reveal-text').forEach(el => {
+                observer.observe(el);
+            });
+        }
+
+        // --- Interactive Gift Logic ---
+        const giftBox = document.getElementById('giftBox');
+        giftBox.addEventListener('click', () => {
+            giftBox.innerHTML = `
+                <div style="text-align:center; animation: beat 0.5s infinite;">
+                    <span style="font-size: 3rem;">❤️</span>
+                    <p style="font-size: 0.8rem; margin-top:10px;">I LOVE YOU</p>
+                </div>
+            `;
+            giftBox.style.background = "transparent";
+            giftBox.style.border = "none";
+            
+            // Firework effect (Simple emoji explosion)
+            for(let i=0; i<20; i++) {
+                createFirework();
+            }
+        });
+
+        function createFirework() {
+            const f = document.createElement('div');
+            f.innerHTML = "✨";
+            f.style.position = "fixed";
+            f.style.left = "50%";
+            f.style.top = "50%";
+            f.style.pointerEvents = "none";
+            f.style.transition = "all 1s ease-out";
+            document.body.appendChild(f);
+
+            const destinationX = (Math.random() - 0.5) * 500;
+            const destinationY = (Math.random() - 0.5) * 500;
+
+            setTimeout(() => {
+                f.style.transform = `translate(${destinationX}px, ${destinationY}px) scale(2)`;
+                f.style.opacity = "0";
+            }, 10);
+
+            setTimeout(() => f.remove(), 1000);
+        }
+
+        window.addEventListener('resize', initCanvas);
+    </script>
+</body>
+</html>
